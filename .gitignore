@@ -1,0 +1,3 @@
+repl_state/
+document_analyzer_agent/documents/*
+document_analyzer_agent/output/*
