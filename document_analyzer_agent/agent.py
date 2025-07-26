@@ -1,5 +1,6 @@
 import logging
 import os
+import argparse
 from strands import Agent
 from strands.multiagent import GraphBuilder
 from strands.types.content import ContentBlock
@@ -23,7 +24,7 @@ image_analyzer = Agent(
                 1. Summary of image analysis
                 2. Insights on any trends or themes that you have observed
 
-            The information will be shared to an HTML report generation agent. Please present the information in a well structured mannger that is easy to consume and process.
+            The information will be shared to an HTML report generation agent. Please present the information in a well structured format that is easy to consume and process.
         ''',
     model="us.anthropic.claude-3-7-sonnet-20250219-v1:0"
 )
@@ -47,12 +48,22 @@ builder.set_entry_point("image_analyzer")
 
 graph = builder.build()
 
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Document analyzer agent')
+parser.add_argument('--context', type=str, help='Additional context for image analysis', default=None)
+args = parser.parse_args()
+
 # Create content blocks with text and image
 documents_folder_path = f"{os.getcwd()}/document_analyzer_agent/documents"
 file_names = os.listdir(documents_folder_path)
 
+# Create initial content block with instructions and optional context
+instruction_text = f"Analyze the provided images and create an HTML report that provides high level insights and metrics in the directory {os.getcwd()}/document_analyzer_agent/output."
+if args.context:
+    instruction_text += f"\n\nAdditional context for analysis: {args.context}"
+
 content_blocks = [
-    ContentBlock(text=f"Analyze the provided images and create an HTML report that provides high level insights and metrics in the directory {os.getcwd()}/document_analyzer_agent/output.")
+    ContentBlock(text=instruction_text)
 ]
 
 for file_name in file_names:
