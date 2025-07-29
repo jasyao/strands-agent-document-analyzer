@@ -2,3 +2,4 @@ repl_state/
 document_analyzer_agent/documents/*
 document_analyzer_agent/output/*
 *.DS_Store
+__pycache__
